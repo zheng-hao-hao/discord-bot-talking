@@ -3,6 +3,8 @@ Author:@Zon0607
 
 ver.:alpha 0.0.1
 
+date:2024.06.13
+
 pip install list: Pillow,discord.py,interactions
 
 '''
