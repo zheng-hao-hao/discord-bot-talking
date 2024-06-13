@@ -1,10 +1,20 @@
+'''
+Author:@Zon0607
+
+ver.:alpha 0.0.1
+
+pip install list: Pillow,discord.py,interactions
+
+'''
 import discord
 from discord import channel
 from discord.ext import commands
 from discord.flags import Intents
+import interactions
 import json
 import os
 import time
+import asyncio
 
 with open('setting.json','r',encoding='utf8') as jfile:
     jdata = json.load(jfile)
@@ -12,41 +22,112 @@ with open('setting.json','r',encoding='utf8') as jfile:
 intents = discord.Intents.default()
 intents.members = True
 
-bot = commands.Bot(command_prefix='/',intents = intents)
 
-@bot.event
-async def on_ready():
-    print("機器人已就緒")
+#=======================interactions.py settings===========================
+irtbot = interactions.Client(token=jdata['TOKEN'])
 
-@bot.event
-async def on_member_join(user):
-    channel = bot.get_channel(int(jdata['Msg_channel']))
-    await channel.send(f"{user}加入了伺服器!")
+@interactions.listen()
+async def Startup():
+    print('main bot is ready')
+
+#fixing cmds
+
+@interactions.slash_command(
+    name="loadets",
+    description="load extension",
+    options=[  
+                interactions.SlashCommandOption(
+                name="name",
+                description="The extension name that you want to load.",
+                type=interactions.OptionType.STRING,
+                required=True
+                )
+    ],
+    default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
+)
+async def loadets(ctx,name):
+    try:
+        irtbot.load_extension(f'cmds.{name}')
+        await ctx.send(f'{name} extension has loaded.')
+    except:
+        print(f'Error:Faild to load extension:{name}.')
+        await ctx.send(f'Error:Faild to load extension:{name}.')
 
 
-@bot.event 
-async def on_member_remove(user):
-    channel = bot.get_channel(int(jdata['Msg_channel']))
-    await channel.send(f"{user}離開了伺服器!")
+@interactions.slash_command(
+    name="reloadets",
+    description="reload extension",
+    options=[interactions.SlashCommandOption(
+                name="name",
+                description="The extension name that you want to reload.",
+                type=interactions.OptionType.STRING,
+                required=True
+            )
+    ],
+    default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
+)
+async def reloadets(ctx,name):
+    try:
+        irtbot.reload_extension(f'cmds.{name}')
+        await ctx.send(f'{name} extension has reloaded.')
+    except:
+        print(f'Error:Faild to reload extension:{name}.')
+        await ctx.send(f'Error:Faild to reload extension:{name}.')
 
-@bot.command()
-async def load(ctx,extension):
-    bot.load_extension(f'cmds.{extension}')
-    await ctx.send(f'安裝 {extension} 模組完成')
+@interactions.slash_command(
+    name="unloadets",
+    description="unload extension",
+    options=[interactions.SlashCommandOption(
+                name="name",
+                description="The extension name that you want to unload.",
+                type=interactions.OptionType.STRING,
+                required=True
+            )
+    ],
+    default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
+)
+async def reloadets(ctx,name):
+    try:
+        irtbot.unload_extension(f'cmds.{name}')
+        await ctx.send(f'{name} extension has unloaded.')
+    except:
+        print(f'Error:Faild to unload extension:{name}.')
+        await ctx.send(f'Error:Faild to unload extension:{name}.')
 
-@bot.command()
-async def unload(ctx,extension):
-    bot.unload_extension(f'cmds.{extension}')
-    await ctx.send(f'卸載 {extension} 模組完成')
 
-@bot.command()
-async def reload(ctx,extension):
-    bot.reload_extension(f'cmds.{extension}')
-    await ctx.send(f'重新載入 {extension} 模組完成')
 
 for filename in os.listdir("./cmds"):
     if filename.endswith(".py"):
-        bot.load_extension(f"cmds.{filename[:-3]}")
+        try:
+            irtbot.load_extension(f'cmds.{filename[:-3]}')
+        except Exception as e:
+            print(f"Failed to load extension:{filename[:-3]}.", e)
 
-if __name__ =="__main__":
-    bot.run(jdata['TOKEN'])
+
+#=======================discord.py settings===============================
+dcbot = commands.Bot(command_prefix='',intents = intents)
+
+@dcbot.event
+async def on_ready():
+    print("event modes is ready")
+
+@dcbot.event
+async def on_member_join(member):
+    channel = dcbot.get_channel(int(jdata['Msg_channel']))
+    await channel.send(f"{member.display_name}加入了伺服器!")
+
+
+@dcbot.event 
+async def on_member_remove(member):
+    channel = dcbot.get_channel(int(jdata['Msg_channel']))
+    await channel.send(f"{member.display_name}離開了伺服器!")
+
+#start two bot at the same time(irtbot and dcbot)
+async def main():
+    await asyncio.gather(
+        dcbot.start(jdata['TOKEN']),
+        irtbot.astart()
+    )
+
+#run code
+asyncio.run(main())
