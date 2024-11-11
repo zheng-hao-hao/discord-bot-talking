@@ -1,7 +1,7 @@
 '''
 Author:@Zon0607
 
-ver.:alpha 0.0.1
+ver.:alpha 0.1.5
 
 date:2024.06.13
 
