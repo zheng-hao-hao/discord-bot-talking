@@ -1,28 +1,27 @@
 '''
 Author:@Zon0607
 
-ver.:alpha 0.0.1
+ver.:alpha 0.2.0
 
-date:2024.06.13
+date:2024.12.15
 
-pip install list: Pillow,discord.py,interactions
+pip install list: Pillow,discord.py,interactions,google-generativeai
 
 '''
+import random
 import discord
 from discord import channel
 from discord.ext import commands
 from discord.flags import Intents
 import interactions
-import json
-import os
-import time
-import asyncio
+import json #JSON
+import os #OS
+import time #TIME
+import asyncio #ASYNCIO
 
 with open('setting.json','r',encoding='utf8') as jfile:
     jdata = json.load(jfile)
 
-intents = discord.Intents.default()
-intents.members = True
 
 
 #=======================interactions.py settings===========================
@@ -55,8 +54,8 @@ async def loadets(ctx,name):
         print(f'Error:Faild to load extension:{name}.')
         await ctx.send(f'Error:Faild to load extension:{name}.')
 
-
-@interactions.slash_command(
+#fixing
+'''@interactions.slash_command(
     name="reloadets",
     description="reload extension",
     options=[interactions.SlashCommandOption(
@@ -74,7 +73,7 @@ async def reloadets(ctx,name):
         await ctx.send(f'{name} extension has reloaded.')
     except:
         print(f'Error:Faild to reload extension:{name}.')
-        await ctx.send(f'Error:Faild to reload extension:{name}.')
+        await ctx.send(f'Error:Faild to reload extension:{name}.')'''
 
 @interactions.slash_command(
     name="unloadets",
@@ -107,6 +106,8 @@ for filename in os.listdir("./cmds"):
 
 
 #=======================discord.py settings===============================
+intents = discord.Intents.default()
+intents.members = True
 dcbot = commands.Bot(command_prefix='',intents = intents)
 
 @dcbot.event

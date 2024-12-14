@@ -6,7 +6,7 @@
     "configurations": [
         {
             "name": "Python: Current Dir (external)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "cwd":"${fileDirname}",
             "program": "${file}",
@@ -15,7 +15,7 @@
         },
         {
             "name": "Python: Current Dir (internal)",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "cwd":"${fileDirname}",
             "program": "${file}",
@@ -24,7 +24,7 @@
          },
         {
              "name": "Python: Current File (Integrated Terminal)",
-             "type": "python",
+             "type": "debugpy",
              "request": "launch",
              "program": "${file}",
              "console": "integratedTerminal",

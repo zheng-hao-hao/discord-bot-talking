@@ -9,4 +9,4 @@ class IRTmain(interactions.Extension):
    description="Test bot"
    )
    async def test(self, ctx):
-       await ctx.send("bot is online")
+       await ctx.send("bot is online <:picachu:1282184873338994739>")

@@ -1,4 +1,5 @@
 {
   "TOKEN":"My TOKEN",
-  "Msg_channel":"1015971250868334695"
+  "Msg_channel":"MY channel",
+  "GeminiAPI_key":"My GeminiAPI_key"
 }
