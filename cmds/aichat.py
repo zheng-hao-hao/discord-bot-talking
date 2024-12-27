@@ -1,7 +1,7 @@
 import interactions
 import google.generativeai as gemini
 import json
-import os
+
 
 #=======================Gemini settings===========================
 with open("D:\\vs_code\discord-bot-talking\setting.json","r",encoding='utf8') as jfile:
@@ -34,6 +34,12 @@ class aichat(interactions.Extension):
     ],
    )
    async def aichat(self,ctx,message: str):
-    response = chat.send_message(message)
-    response_text = response.text
-    await ctx.send(response_text)
+    try:
+        await ctx.defer()
+        response = chat.send_message(message)
+        response_text = response.text
+        print(response_text)
+        await ctx.send(response_text)
+
+    except:
+        await ctx.send("此內容不適用於此指令")

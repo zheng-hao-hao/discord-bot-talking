@@ -8,7 +8,7 @@ date:2024.12.15
 pip install list: Pillow,discord.py,interactions,google-generativeai
 
 '''
-import random
+#import random
 import discord
 from discord import channel
 from discord.ext import commands
@@ -16,8 +16,11 @@ from discord.flags import Intents
 import interactions
 import json #JSON
 import os #OS
-import time #TIME
+#import time #TIME
 import asyncio #ASYNCIO
+from interactions.api.voice.audio import AudioVolume
+from bs4 import BeautifulSoup as bs4
+#import requests
 
 with open('setting.json','r',encoding='utf8') as jfile:
     jdata = json.load(jfile)
@@ -82,7 +85,7 @@ async def reloadets(ctx,name):
                 name="name",
                 description="The extension name that you want to unload.",
                 type=interactions.OptionType.STRING,
-                required=True
+                required=True,
             )
     ],
     default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
