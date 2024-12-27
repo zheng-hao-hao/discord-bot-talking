@@ -1,3 +1,6 @@
 discord.py
 interactions.py
 google-generativeai
+beautifulsoup4
+discord-py-interactions
+requests
