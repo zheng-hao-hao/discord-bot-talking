@@ -5,8 +5,6 @@ ver.:alpha 0.2.0
 
 date:2024.12.15
 
-pip install list: Pillow,discord.py,interactions,google-generativeai
-
 '''
 #import random
 import discord
@@ -58,7 +56,7 @@ async def loadets(ctx,name):
         await ctx.send(f'Error:Faild to load extension:{name}.')
 
 #fixing
-'''@interactions.slash_command(
+@interactions.slash_command(
     name="reloadets",
     description="reload extension",
     options=[interactions.SlashCommandOption(
@@ -69,14 +67,14 @@ async def loadets(ctx,name):
             )
     ],
     default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
-)
+    )
 async def reloadets(ctx,name):
     try:
         irtbot.reload_extension(f'cmds.{name}')
         await ctx.send(f'{name} extension has reloaded.')
     except:
         print(f'Error:Faild to reload extension:{name}.')
-        await ctx.send(f'Error:Faild to reload extension:{name}.')'''
+        await ctx.send(f'Error:Faild to reload extension:{name}.')
 
 @interactions.slash_command(
     name="unloadets",
@@ -90,7 +88,7 @@ async def reloadets(ctx,name):
     ],
     default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
 )
-async def reloadets(ctx,name):
+async def unloadets(ctx,name):
     try:
         irtbot.unload_extension(f'cmds.{name}')
         await ctx.send(f'{name} extension has unloaded.')
