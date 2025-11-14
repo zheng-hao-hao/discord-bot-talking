@@ -3,22 +3,17 @@ Author:@Zon0607
 
 ver.:alpha 0.2.0
 
-date:2024.12.15
-
+date:2024.03.20
 '''
-#import random
 import discord
 from discord import channel
 from discord.ext import commands
 from discord.flags import Intents
 import interactions
-import json #JSON
-import os #OS
-#import time #TIME
-import asyncio #ASYNCIO
-from interactions.api.voice.audio import AudioVolume
-from bs4 import BeautifulSoup as bs4
-#import requests
+import json 
+import os
+import asyncio 
+import traceback
 
 with open('setting.json','r',encoding='utf8') as jfile:
     jdata = json.load(jfile)
@@ -28,12 +23,17 @@ with open('setting.json','r',encoding='utf8') as jfile:
 #=======================interactions.py settings===========================
 irtbot = interactions.Client(token=jdata['TOKEN'])
 
-@interactions.listen()
-async def Startup():
-    print('main bot is ready')
+#load all extension
+for filename in os.listdir("./cmds"):
+    if filename.endswith(".py"):
+        try:
+            irtbot.load_extension(f'cmds.{filename[:-3]}')
+        except Exception as e:
+            print(f"Failed to load extension:{filename[:-3]}.", e)
+            print(" Traceback:")
+            traceback.print_exc()
 
-#fixing cmds
-
+#cmds-load extension
 @interactions.slash_command(
     name="loadets",
     description="load extension",
@@ -55,27 +55,7 @@ async def loadets(ctx,name):
         print(f'Error:Faild to load extension:{name}.')
         await ctx.send(f'Error:Faild to load extension:{name}.')
 
-#fixing
-@interactions.slash_command(
-    name="reloadets",
-    description="reload extension",
-    options=[interactions.SlashCommandOption(
-                name="name",
-                description="The extension name that you want to reload.",
-                type=interactions.OptionType.STRING,
-                required=True
-            )
-    ],
-    default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
-    )
-async def reloadets(ctx,name):
-    try:
-        irtbot.reload_extension(f'cmds.{name}')
-        await ctx.send(f'{name} extension has reloaded.')
-    except:
-        print(f'Error:Faild to reload extension:{name}.')
-        await ctx.send(f'Error:Faild to reload extension:{name}.')
-
+#cmds-unload extension
 @interactions.slash_command(
     name="unloadets",
     description="unload extension",
@@ -96,15 +76,44 @@ async def unloadets(ctx,name):
         print(f'Error:Faild to unload extension:{name}.')
         await ctx.send(f'Error:Faild to unload extension:{name}.')
 
+#cmds-reload extension
+@interactions.slash_command(
+    name="reloadets",
+    description="reload extension",
+    options=[
+        interactions.SlashCommandOption(
+            name="name",
+            description="The extension name that you want to reload.",
+            type=interactions.OptionType.STRING,
+            required=True)
+    ],
+    default_member_permissions=interactions.Permissions.
+    ADMINISTRATOR  #only ADMIN can use this cmd
+)
+async def reloadets(ctx, name):
+    try:
+        irtbot.reload_extension(f'cmds.{name}')
+        await ctx.send(f'{name} extension has reloaded.')
+    except:
+        print(f'Error:Faild to reload extension:{name}.')
+        await ctx.send(f'Error:Faild to reload extension:{name}.')
 
+#cmds-help
+@interactions.slash_command(
+    name="help",
+    description="Show all available commands."
+)
+async def help(ctx):
+            cmds = irtbot.application_commands
+            a = ''
+            for ab in cmds:
+                a = a + f'/{ab.name}\n'
+            await ctx.send(f'指令名稱:\n{a}')
 
-for filename in os.listdir("./cmds"):
-    if filename.endswith(".py"):
-        try:
-            irtbot.load_extension(f'cmds.{filename[:-3]}')
-        except Exception as e:
-            print(f"Failed to load extension:{filename[:-3]}.", e)
-
+#event-startup
+@interactions.listen()
+async def Startup():
+    print('main bot is ready')
 
 #=======================discord.py settings===============================
 intents = discord.Intents.default()
@@ -118,20 +127,19 @@ async def on_ready():
 @dcbot.event
 async def on_member_join(member):
     channel = dcbot.get_channel(int(jdata['Msg_channel']))
-    await channel.send(f"{member.display_name}加入了伺服器!")
+    await channel.send(f"{member.mention}加入了伺服器! ")
 
 
 @dcbot.event 
 async def on_member_remove(member):
     channel = dcbot.get_channel(int(jdata['Msg_channel']))
-    await channel.send(f"{member.display_name}離開了伺服器!")
+    await channel.send(f"{member.mention}離開了伺服器!")
 
-#start two bot at the same time(irtbot and dcbot)
+
 async def main():
     await asyncio.gather(
         dcbot.start(jdata['TOKEN']),
         irtbot.astart()
     )
 
-#run code
 asyncio.run(main())

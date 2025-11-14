@@ -1,0 +1,36 @@
+[
+  {
+    "tournament_name": "VBL 2025 SeasonFinal",
+    "team_name": "Convenent X",
+    "team_abbreviation": "CX",
+    "contact_person_discord_id": "<@785496606765744158>",
+    "players": [
+      {
+        "discord_id": "@p1",
+        "valorant_id": "abc#1"
+      },
+      {
+        "discord_id": "@p2",
+        "valorant_id": "abc#2"
+      },
+      {
+        "discord_id": "@p3",
+        "valorant_id": "abc#3"
+      },
+      {
+        "discord_id": "@p4",
+        "valorant_id": "abc#4"
+      },
+      {
+        "discord_id": "@p5",
+        "valorant_id": "abc#5"
+      }
+    ],
+    "other_members": [
+      {
+        "discord_id": "@p6",
+        "valorant_id": "abc#6"
+      }
+    ]
+  }
+]
