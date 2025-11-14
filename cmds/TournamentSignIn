@@ -1,6 +1,53 @@
+from discord import integrations
 import interactions
-import
 import json
 
+class cmds(interactions.Extension):
+   def __init__(self,client: interactions.Client):
+      self.client = client
 
-#=======================Codes===========================
+   @interactions.slash_command(
+    name="register",
+    description="Register for the VBL tournament. ",
+    options=
+      [
+      interactions.SlashCommandOption // Tournament Name
+      (
+          name="Tournament Name",
+          description="The tournament you want to register.",
+          type=interactions.OptionType.STRING,
+          required=True,
+      ),
+      interactions.SlashCommandOption //Team Name
+      (
+          name="Team Name",
+          description="Your team's name.",
+          type=interactions.OptionType.STRING,
+          required=True,
+      ),
+      interactions.SlashCommandOption //Team abbreviation 
+      (
+          name="Team Abbreviation",
+          description="Your team's abbreviation (alphabets and numbers only, 3-4 letters.).",
+          type=interactions.OptionType.STRING,
+          required=True,
+      ),
+      interactions.SlashCommandOption //Team's contacts person's Dsicord ID
+      (
+          name="Contact person's Disocrd ID",
+          description="Your team's contact person's Disocrd ID(e.g. @abc123).",
+          type=interactions.OptionType.STRING,
+          required=True,
+      ),
+      interactions.SlashCommandOption //player 1 Discord ID
+      (
+          name="Player 1 Discord ID",
+          description="Player 1 Discord ID (e.g. @abc123).",
+          type=interactions.OptionType.STRING,
+          required=True,
+      )
+      ]
+   )
+   async def roll(self, ctx,start,end):
+        num = rd.randint(start,end)
+        await ctx.send(f"You rolled {num}!!!")
