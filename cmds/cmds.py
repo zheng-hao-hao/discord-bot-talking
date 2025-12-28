@@ -9,23 +9,18 @@ class cmds(interactions.Extension):
    @interactions.slash_command(
     name="roll",
     description="luck :)",
-    options=
-      [
-      interactions.SlashCommandOption
-      (
-          name="start",
+   )
+   @interactions.slash_option(
+      name="start",
           description="starting value",
-          type=interactions.OptionType.INTEGER,
+          opt_type=interactions.OptionType.INTEGER,
           required=True,
-      ),
-      interactions.SlashCommandOption
-      (
-          name="end",
+)
+   @interactions.slash_option(
+      name="end",
           description="end value",
-          type=interactions.OptionType.INTEGER,
+          opt_type=interactions.OptionType.INTEGER,
           required=True,
-      )
-      ]
    )
    async def roll(self, ctx,start,end):
         num = rd.randint(start,end)

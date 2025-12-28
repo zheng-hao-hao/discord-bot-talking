@@ -1,9 +1,9 @@
 '''
 Author:@Zon0607
 
-ver.:alpha 0.2.0
+ver.:alpha 0.3.0
 
-date:2024.03.20
+date:2025.12.28
 '''
 import discord
 from discord import channel
@@ -21,7 +21,8 @@ with open('setting.json','r',encoding='utf8') as jfile:
 
 
 #=======================interactions.py settings===========================
-irtbot = interactions.Client(token=jdata['TOKEN'])
+intents = interactions.Intents.DEFAULT | interactions.Intents.GUILD_MEMBERS
+irtbot = interactions.Client(token=jdata['TOKEN'], sync_interactions=True, intents=intents)
 
 #load all extension
 for filename in os.listdir("./cmds"):
@@ -37,36 +38,40 @@ for filename in os.listdir("./cmds"):
 @interactions.slash_command(
     name="loadets",
     description="load extension",
-    options=[  
-                interactions.SlashCommandOption(
-                name="name",
-                description="The extension name that you want to load.",
-                type=interactions.OptionType.STRING,
-                required=True
-                )
-    ],
-    default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
+    default_member_permissions=interactions.Permissions.ADMINISTRATOR
 )
-async def loadets(ctx,name):
+@interactions.slash_option(
+    name="name",
+    description="The extension name that you want to load.",
+    opt_type=interactions.OptionType.STRING,
+    required=True
+)
+async def loadets(ctx, name: str):
     try:
         irtbot.load_extension(f'cmds.{name}')
         await ctx.send(f'{name} extension has loaded.')
     except:
         print(f'Error:Faild to load extension:{name}.')
+        import traceback
+        traceback.print_exc()
         await ctx.send(f'Error:Faild to load extension:{name}.')
-
+        
 #cmds-unload extension
 @interactions.slash_command(
     name="unloadets",
     description="unload extension",
-    options=[interactions.SlashCommandOption(
-                name="name",
-                description="The extension name that you want to unload.",
-                type=interactions.OptionType.STRING,
-                required=True,
-            )
-    ],
     default_member_permissions=interactions.Permissions.ADMINISTRATOR #only ADMIN can use this cmd
+)
+@interactions.slash_option(
+    name="name",
+            description="The extension name that you want to unload.",
+            opt_type=interactions.OptionType.STRING,
+            required=True,
+            choices=[
+                {"name": filename[:-3], "value": filename[:-3]} 
+                for filename in os.listdir("./cmds")
+                if filename.endswith(".py")
+            ]
 )
 async def unloadets(ctx,name):
     try:
@@ -74,28 +79,35 @@ async def unloadets(ctx,name):
         await ctx.send(f'{name} extension has unloaded.')
     except:
         print(f'Error:Faild to unload extension:{name}.')
+        print(" Traceback:")
+        traceback.print_exc()
         await ctx.send(f'Error:Faild to unload extension:{name}.')
 
 #cmds-reload extension
 @interactions.slash_command(
     name="reloadets",
     description="reload extension",
-    options=[
-        interactions.SlashCommandOption(
-            name="name",
-            description="The extension name that you want to reload.",
-            type=interactions.OptionType.STRING,
-            required=True)
-    ],
-    default_member_permissions=interactions.Permissions.
-    ADMINISTRATOR  #only ADMIN can use this cmd
+    default_member_permissions=interactions.Permissions.ADMINISTRATOR  #only ADMIN can use this cmd
 )
-async def reloadets(ctx, name):
+@interactions.slash_option(
+    name="name",
+    description="The extension name that you want to reload.",
+    opt_type=interactions.OptionType.STRING,
+    required=True,
+    choices=[
+        {"name": filename[:-3], "value": filename[:-3]} 
+        for filename in os.listdir("./cmds")
+        if filename.endswith(".py")
+    ]
+)
+async def reloadets(ctx, name: str):
     try:
         irtbot.reload_extension(f'cmds.{name}')
         await ctx.send(f'{name} extension has reloaded.')
     except:
         print(f'Error:Faild to reload extension:{name}.')
+        import traceback
+        traceback.print_exc()
         await ctx.send(f'Error:Faild to reload extension:{name}.')
 
 #cmds-help

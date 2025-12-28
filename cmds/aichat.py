@@ -1,14 +1,14 @@
 import interactions
 import google.generativeai as gemini
 import json
-
+import traceback
 
 #=======================Gemini settings===========================
-with open("D:\\vs_code\discord-bot-talking\setting.json","r",encoding='utf8') as jfile:
+with open(".\setting.json","r",encoding='utf8') as jfile:
     jdata = json.load(jfile)
 
 gemini.configure(api_key=jdata["GeminiAPI_key"])
-model = gemini.GenerativeModel("gemini-1.5-flash")
+model = gemini.GenerativeModel("gemini-3-flash-preview")
 chat = model.start_chat(
     history=[
         {"role": "user", "parts": "Hello"},
@@ -24,14 +24,12 @@ class aichat(interactions.Extension):
    @interactions.slash_command(
    name="aichat",
    description="Talk to Gemini",
-   options=[
-        interactions.SlashCommandOption(
-            name="message",  
+   )
+   @interactions.slash_option(
+      name="message",  
             description="Talk to Gemini",  
-            type=interactions.OptionType.STRING,  
-            required=True,  
-        ),
-    ],
+            opt_type=interactions.OptionType.STRING,  
+            required=True,
    )
    async def aichat(self,ctx,message: str):
     try:
@@ -43,3 +41,4 @@ class aichat(interactions.Extension):
 
     except:
         await ctx.send("此內容不適用於此指令")
+        traceback.print_exc()
